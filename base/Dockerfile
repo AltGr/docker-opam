@@ -7,6 +7,7 @@ RUN apt-get -y install python-software-properties
 RUN yes | add-apt-repository ppa:avsm/ppa
 RUN apt-get -y update -qq
 RUN apt-get -y install -qq ocaml ocaml-native-compilers camlp4-extra opam
+ADD opam-installext /usr/bin/opam-installext
 RUN adduser --disabled-password --gecos "" opam
 RUN passwd -l opam
 ADD opamsudo /etc/sudoers.d/opam
@@ -15,7 +16,9 @@ USER opam
 ENV HOME /home/opam
 ENV OPAMVERBOSE 1
 ENV OPAMYES 1
-WORKDIR /home/opam
-ADD opam-installext /usr/bin/opam-installext
+ADD opam-repository /home/opam/opam-repository
+RUN opam init /home/opam/opam-repository
+ADD packages /etc/opam-packages
 ADD opamrun /usr/bin/opamrun
+WORKDIR /home/opam
 ENTRYPOINT ["/usr/bin/opamrun"]
