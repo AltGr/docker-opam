@@ -16,9 +16,6 @@ USER opam
 ENV HOME /home/opam
 ENV OPAMVERBOSE 1
 ENV OPAMYES 1
-ADD opam-repository /home/opam/opam-repository
-RUN opam init /home/opam/opam-repository
-ADD packages /etc/opam-packages
 ADD opamrun /usr/bin/opamrun
 WORKDIR /home/opam
 ENTRYPOINT ["/usr/bin/opamrun"]
