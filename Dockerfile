@@ -4,7 +4,7 @@ RUN apt-get -y install sudo pkg-config git build-essential m4 software-propertie
 RUN git config --global user.email "docker@example.com"
 RUN git config --global user.name "Docker CI"
 RUN apt-get -y install python-software-properties
-RUN echo "yes" | add-apt-repository ppa:avsm/ocaml41+opam11
+RUN yes | add-apt-repository ppa:avsm/ppa
 RUN apt-get -y update -qq
 RUN apt-get -y install -qq ocaml ocaml-native-compilers camlp4-extra opam
 ADD opam-installext /usr/bin/opam-installext
@@ -16,6 +16,11 @@ USER opam
 ENV HOME /home/opam
 ENV OPAMVERBOSE 1
 ENV OPAMYES 1
-RUN opam init git://github.com/mirage/opam-repository#add-depexts-11
-RUN opam install ocamlfind
-ENTRYPOINT ["usr/bin/opam-installext"]
+ADD opam-repository /home/opam/opam-repository
+RUN opam init /home/opam/opam-repository
+ADD packages /etc/opam-packages
+RUN opam-installext $(cat /etc/opam-packages)
+ADD opamrun /usr/bin/opamrun
+WORKDIR /home/opam
+CMD ["utop"]
+ENTRYPOINT ["/usr/bin/opamrun"]

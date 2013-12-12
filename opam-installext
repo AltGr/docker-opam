@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+eval `opam config env`
 depext=`opam install $* -e ubuntu`
 echo Ubuntu depexts: $depext
 if [ "$depext" != "" ]; then 
